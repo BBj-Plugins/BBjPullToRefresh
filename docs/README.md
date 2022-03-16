@@ -76,7 +76,7 @@ Supported themes are :
 
 You can also create a custom theme by assigning the widget a custom attribute
 
-```bbj
+```BBj
 use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
 
 wnd! = BBjAPI().openSysGui("X0").addWindow(10,10,300,300,"BBjPullToRefresh",$$)
