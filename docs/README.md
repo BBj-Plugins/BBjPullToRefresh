@@ -74,6 +74,35 @@ Supported themes are :
 - BBjToast.THEME_DANGER
 - BBjToast.THEME_INFO
 
+You can also create a custom theme by assigning the widget a custom attribute
+
+```bbj
+use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
+
+wnd! = BBjAPI().openSysGui("X0").addWindow(10,10,300,300,"BBjPullToRefresh",$$)
+wnd!.setCallback(BBjAPI.ON_CLOSE,"eoj")
+wnd!.setAttribute("@app-style-bottom", "" +
+: "[theme=""my-custom-theme""]{ "+
+: " color: teal"+
+: "}")
+
+container! = wnd!.addChildWindow(wnd!.getAvailableControlID(), 0, 0, 300, 300, "", $0000800$, BBjAPI().getSysGui().getAvailableContext())
+
+ptr! = new BBjPullToRefresh(container!)
+ptr!.setAttribute("theme","my-custom-theme")
+ptr!.onRefresh("onRefresh")
+
+process_events
+
+onRefresh:
+  wait 3
+  ptr!.finish()
+return
+
+eoj:
+release
+```
+
 ## Texts
 
 BBjPullToRefresh goes throw three stages:
