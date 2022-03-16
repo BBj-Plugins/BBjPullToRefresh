@@ -1,0 +1,26 @@
+{
+  "name": "BBjPullToRefresh",
+  "version": "0.0.1",
+  "private": false,
+  "description": "A quick and powerful plugin for your pull-to-refresh needs in your DWC app 🚀 !",
+  "author": "BASIS Europe Distribution GmbH",
+  "license": "MIT",
+  "homepage": "https://bbj-plugins.github.io/BBjPullToRefresh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BBj-Plugins/BBjPullToRefresh"
+  },
+  "keywords": [
+    "bbj",
+    "dwc",
+    "pull-to-refresh"
+  ],
+  "bugs": {
+    "url": "https://github.com/BBj-Plugins/BBjPullToRefresh/issues"
+  },
+  "bbj_dependency": "22.00",
+  "client": [
+    "DWC"
+  ],
+  "plugin_dependencies": []
+}

@@ -1,0 +1,407 @@
+use java.util.HashMap
+rem /**
+rem  * BBjPullToRefreshEvent
+rem  *
+rem  * @author Hyyan Abo Fakher
+rem  */
+class public BBjPullToRefreshEvent
+
+  field protected BBjPullToRefresh Component!
+  rem /**
+  rem  * Construct a new BBjPullToRefreshEvent
+  rem  *
+  rem  * @param component! The instance of the BBjPullToRefreshEvent object
+  rem  */
+  method public BBjPullToRefreshEvent(BBjPullToRefresh component!)
+    #Component! = component!
+  methodend
+  rem /**
+  rem  * Get the BBjPullToRefreshEvent instance
+  rem  *
+  rem  * @return The widget instance
+  rem  */
+  method public BBjPullToRefreshEvent getWidget()
+    methodret #Component!
+  methodend
+  rem /**
+  rem  * Alias for `BBjPullToRefreshEvent.getWidget()`
+  rem  *
+  rem  * @return The control instance
+  rem  */
+  method public BBjPullToRefreshEvent getControl()
+    methodret #getWidget()
+  methodend
+
+classend
+rem /**
+rem  * BBjPullToRefresh
+rem  *
+rem  * @author Hyyan Abo Fakher
+rem  */
+class public BBjPullToRefresh
+  rem /**
+  rem  * A constant which defines that the BBjPullToRefresh will be attached to the passed child window instance
+  rem  */
+  field public static BBjNumber PREPEND_SELF = 2
+  rem /**
+  rem  * A constant which defines that the BBjPullToRefresh will be attached to the parent of the passed child window instance
+  rem  */
+  field public static BBjNumber PREPEND_PARENT = 4
+  rem /**
+  rem  * A constant which refers to the toast `primary` theme.
+  rem  */
+  field public static BBjNumber THEME_PRIMARY = 6
+  rem /**
+  rem  * A constant which refers to the toast `success` theme.
+  rem  */
+  field public static BBjNumber THEME_SUCCESS = 16
+  rem /**
+  rem  * A constant which refers to the toast `warning` theme.
+  rem  */
+  field public static BBjNumber THEME_WARNING = 32
+  rem /**
+  rem  * A constant which refers to the toast `danger` theme.
+  rem  */
+  field public static BBjNumber THEME_DANGER = 64
+  rem /**
+  rem  * A constant which refers to the toast `info` theme.
+  rem  */
+  field public static BBjNumber THEME_INFO = 128
+  rem /**
+  rem  * When true , then BBjPullToRefresh will be disabled, enabled otherwise rem
+  rem  */
+  field public Boolean Enabled! = 1
+  rem /**
+  rem  * The arrow icon to use when the `stage` is `pull` or `release`.
+  rem  */
+  field public BBjString IconArrow! = "bbj:arrow-down"
+  rem /**
+  rem  * The refresh icon to use when the `stage` is `refresh`.
+  rem  */
+  field public BBjString IconRefresh! = "bbj:animated-spinner"
+  rem /**
+  rem  * The minimum distance of the pull until the refresher will go into the release state.
+  rem  */
+  field public BBjNumber Threshold! = 80
+  rem /**
+  rem  * The maximum distance of the pull.
+  rem  */
+  field public BBjNumber ThresholdMax! = Integer.MAX_VALUE
+  rem /**
+  rem  * The BBjPullToRefresh's theme.
+  rem  */
+  field public BBjNumber Theme! = BBjPullToRefresh.THEME_PRIMARY
+  rem /**
+  rem  * The initial instructions string.
+  rem  */
+  field public BBjString TextPull! = "Pull down to refresh"
+  rem /**
+  rem  * The release instructions text
+  rem  */
+  field public BBjString TextRelease! = "Release to refresh"
+  rem /**
+  rem  * The refresh instructions text
+  rem  */
+  field public BBjString TextRefresh! = "Refreshing"
+  field protected BBjString UUID! = java.util.UUID.randomUUID().toString()
+  field protected BBjChildWindow Canvas!
+  field protected BBjHtmlView HTMLView!
+  field protected HashMap Attributes! = new HashMap()
+  rem /**
+  rem  * Construct a new BBjPullToRefresh component
+  rem  *
+  rem  * @param wnd! The child window instance
+  rem  * @param id! The id of the created child window
+  rem  * @param cssClass! A css class selector to add to the toast client-side component
+  rem  */
+  method public BBjPullToRefresh(BBjChildWindow wnd!, BBjNumber id!, BBjNumber prepend!)
+    wnd!.setAttribute("data-canvas", #UUID!)
+    #Canvas! = wnd!.addChildWindow(id!, 0, 0, 0, 0, "", $00108800$, BBjAPI().getSysGui().getAvailableContext())
+    rem force components to load
+    wnd!.addButton(32766,0,0,0,0,"",$0010$)
+    #HTMLView! = #Canvas!.addHtmlView(32767, 0, 0, 0, 0, "", $00000010$)
+    #HTMLView!.setOpaque(0)
+    #HTMLView!.setNoEdge(1)
+    #HTMLView!.setTabTraversable(0)
+    #HTMLView!.setFocusable(0)
+    #HTMLView!.setAttribute("data-hv", #UUID!)
+    #HTMLView!.setText("<bbj-refresher data-refresher=""" + #UUID! + """></bbj-refresher>")
+    #HTMLView!.setCallback(BBjAPI.ON_NATIVE_JAVASCRIPT, #this!, "handleJavascriptEvents")
+    prependSelector! = "hv.__canvas.parentElement"
+
+    if(prepend! = BBjPullToRefresh.PREPEND_SELF)
+      prependSelector! = "hv.__canvas"
+    fi
+
+    script! = "(() => {"
+    script! = script! +
+:    "const hv = document.querySelector('[data-hv=""" + #UUID! + """]');" +
+:    "hv.__canvas = document.querySelector('[data-canvas=""" + #UUID! + """]');" +
+:    "hv.__refresher = document.querySelector('[data-refresher=""" + #UUID! + """]');" +
+:    prependSelector! + ".prepend(hv.__refresher);" +
+:    "hv.__refresher.addEventListener('bbj-refresh', ev => {" +
+:    "  if(!hv.basisDispatchCustomEvent) return;" +
+:    "  hv.basisDispatchCustomEvent(hv, {type:'bbj-refresh', detail: ''});" +
+:    "});"
+
+    if(prepend! = BBjPullToRefresh.PREPEND_PARENT)
+      script! = script! +
+:      "hv.__refresher.addEventListener('bbj-pull', ev => {"+
+:      "  hv.__canvas.style.transform = `translate3d(0px, ${ev.detail}px, 0px)`;" +
+:      "});"
+    fi
+
+    script! = script! + "})()"
+    #HTMLView!.executeAsyncScript(script!)
+  methodend
+  rem /**
+  rem  * Construct a new BBjPullToRefresh component
+  rem  *
+  rem  * @param wnd! The child window instance
+  rem  */
+  method public BBjPullToRefresh(BBjChildWindow wnd!, BBjNumber prepend!)
+    #this!(wnd!, wnd!.getAvailableControlID(), prepend!)
+  methodend
+  rem /**
+  rem  * Construct a new BBjPullToRefresh component
+  rem  *
+  rem  * @param wnd! The child window instance
+  rem  */
+  method public BBjPullToRefresh(BBjChildWindow wnd!)
+    #this!(wnd!, BBjPullToRefresh.PREPEND_PARENT)
+  methodend
+  rem /**
+  rem  * Get the unique auto generated id of the component.
+  rem  *
+  rem  * @return BBjString
+  rem  */
+  method public BBjString getUUID()
+    methodret #UUID!
+  methodend
+  rem /**
+  rem  * Get the canvas's id
+  rem  *
+  rem  * @return BBjNumber
+  rem  */
+  method public BBjNumber getID()
+    methodret #getCanvas().getID()
+  methodend
+  rem /**
+  rem  * Get the instance of the component's Canvas
+  rem  *
+  rem  * @return The canvas's instance
+  rem  */
+  method public BBjChildWindow getCanvas()
+    methodret #Canvas!
+  methodend
+  rem /**
+  rem  * Enable / disable the widget
+  rem  *
+  rem  * @param value! when true enabled , disabled otherwise
+  rem  */
+  method public void setEnabled(Boolean value!)
+    attrValue! = iff(!value! , "true", "false")
+    #setAttribute("disabled", attrValue!)
+  methodend
+  rem /**
+  rem  * Set the arrow icon to use when the `stage` is `pull` or `release`.
+  rem  *
+  rem  * Icons can in any of the following formats:
+  rem  *
+  rem  * <ol>
+  rem  *  <li> <b>URL</b>: (ex: /path/to/image.png)
+  rem  *  <li> <b>Data URL</b>: (ex: data:image/jpeg;base64,/9j/4SDpRXhpZgAAT....)
+  rem  *  <li> <b>ICON_NAME</b>: An icon to load from the default BBj icons pool. (ex: `arrow`)
+  rem  *  <li> <b>POOL_NAME:ICON_NAME</b>: An icon to load from the passed pool. (ex: `feather:arrow`)
+  rem  * </ol>
+  rem  *
+  rem  * @param icon! The icon string
+  rem  */
+  method public void setIconArrow(BBjString icon!)
+    #setAttribute("icon-arrow", icon!)
+  methodend
+  rem /**
+  rem  * Set the refresh icon to use when the `stage` is `refresh`.
+  rem  *
+  rem  * Icons can in any of the following formats:
+  rem  *
+  rem  * <ol>
+  rem  *  <li> <b>URL</b>: (ex: /path/to/image.png)
+  rem  *  <li> <b>Data URL</b>: (ex: data:image/jpeg;base64,/9j/4SDpRXhpZgAAT....)
+  rem  *  <li> <b>ICON_NAME</b>: An icon to load from the default BBj icons pool. (ex: `arrow`)
+  rem  *  <li> <b>POOL_NAME:ICON_NAME</b>: An icon to load from the passed pool. (ex: `feather:arrow`)
+  rem  * </ol>
+  rem  *
+  rem  * @param icon! The icon string
+  rem  */
+  method public void setIconRefresh(BBjString icon!)
+    #setAttribute("icon-refresh", icon!)
+  methodend
+  rem /**
+  rem  * Set the minimum distance of the pull until the refresher will go into the release state.
+  rem  *
+  rem  * @param value! The threshold
+  rem  */
+  method public void setThreshold(BBjNumber value!)
+    #setAttribute("threshold", str(value!))
+  methodend
+  rem /**
+  rem  * Set the maximum distance of the pull
+  rem  *
+  rem  * @param value! The threshold
+  rem  */
+  method public void setThresholdMax(BBjNumber value!)
+    #setAttribute("threshold-max", str(value!))
+  methodend
+  rem /**
+  rem  * Set the widget theme
+  rem  *
+  rem  * @param value! The theme constant
+  rem  */
+  method public void setTheme(BBjNumber value!)
+    #setAttribute("theme", #getThemeAttribute(value!))
+  methodend
+  rem /**
+  rem  * Set the initial instructions string.
+  rem  *
+  rem  * @param value! The pull text
+  rem  */
+  method public void setTextPull(BBjString value!)
+    #setAttribute("text-pull", value!)
+  methodend
+  rem /**
+  rem  * Set the release instructions text
+  rem  *
+  rem  * @param value! The release text
+  rem  */
+  method public void setTextRelease(BBjString value!)
+    #setAttribute("text-release", value!)
+  methodend
+  rem /**
+  rem  * Set the refresh instructions text
+  rem  *
+  rem  * @param value! The release text
+  rem  */
+  method public void setTextRefresh(BBjString value!)
+    #setAttribute("text-refresh", value!)
+  methodend
+  rem /**
+  rem  * Set a widget attribute
+  rem  *
+  rem  * @param key! The attribute's name
+  rem  * @param value! The attribute's value
+  rem  */
+  method public void setAttribute(BBjString key!, BBjString value!)
+    script! = "" +
+:    "(() => {" +
+:    " const refresher = document.querySelector('[data-refresher=""" + #getUUID() + """]');" +
+:    " refresher.setAttribute('" + str(key!) + "','" + str(value!) + "');" +
+:    "})()"
+    #getHTMLView().executeAsyncScript(script!)
+  methodend
+  rem /**
+  rem  * Get a widget attribute
+  rem  *
+  rem  * @param key! The attribute's name
+  rem  */
+  method public BBjString getAttribute(BBjString key!)
+    script! = "" +
+:    "(() => {" +
+:    " const refresher = document.querySelector('[data-refresher=""" + #getUUID() + """]');" +
+:    " return refresher.getAttribute('" + str(key!) + "');" +
+:    "})()"
+    methodret str(#getHTMLView().executeScript(script!))
+  methodend
+  rem /**
+  rem  * Finish refreshing
+  rem  *
+  rem  * This method must be called when the refresh is finished
+  rem  */
+  method public void finish()
+    script! = "" +
+:    "(async () => {" +
+:    " await customElements.whenDefined('bbj-refresher');" +
+:    " const refresher = document.querySelector('[data-refresher=""" + #getUUID() + """]');" +
+:    " await refresher.finish();" +
+:    "})()"
+    #getHTMLView().executeAsyncScript(script!)
+  methodend
+  rem /**
+  rem  * Set a refresh callback
+  rem  *
+  rem  * The callback will be invoked every time the user asks to refresh data
+  rem  *
+  rem  * @param callback! The event callback
+  rem  */
+  method public void onRefresh(String callback!)
+    BBjAPI().setCustomEventCallback(#getScopedEventName("bbj-refresh"), callback!)
+  methodend
+  rem /**
+  rem  * Set a refresh callback
+  rem  *
+  rem  * The callback will be invoked every time the user asks to refresh data
+  rem  *
+  rem  * @param callback! A class instance
+  rem  * @param callback! The event method
+  rem  */
+  method public void onRefresh(CustomObject instance!, String method!)
+    BBjAPI().setCustomEventCallback(#getScopedEventName("bbj-refresh"), instance!, method!)
+  methodend
+  rem /**
+  rem  * Clear the refresh callback
+  rem  */
+  method public void clearRefreshCallback()
+    BBjAPI().clearCustomEventCallback(#getScopedEventName("bbj-refresh"))
+  methodend
+  rem /**
+  rem  * Resolve the theme constant as a string attribute
+  rem  *
+  rem  * @param value! The theme constant
+  rem  *  
+  rem  * @return BBjString The theme attribute
+  rem  */
+  method protected BBjString getThemeAttribute(BBjNumber value!)
+    switch value!
+      case BBjPullToRefresh.THEME_PRIMARY
+        methodret "primary"
+      case BBjPullToRefresh.THEME_SUCCESS
+        methodret "success"
+      case BBjPullToRefresh.THEME_WARNING
+        methodret "warning"
+      case BBjPullToRefresh.THEME_DANGER
+        methodret "danger"
+      case BBjPullToRefresh.THEME_INFO
+        methodret "info"
+      case default
+        methodret "primary"
+    swend
+  methodend
+  rem /**
+  rem  * Scope the given event name to the current instance
+  rem  *
+  rem  * @param name! The event name
+  rem  *
+  rem  * @return The scooped event name
+  rem  */
+  method protected BBjString getScopedEventName(BBjString name!)
+    methodret str(#this!)+ name!
+  methodend
+  rem /**
+  rem  * Handle the BBjPullToRefresh client events.
+  rem  *
+  rem  * <b>IMPORTANT</b> This method is not meant to be part of the public API of the widget.
+  rem  * @param ev! The Javascript event
+  rem  *
+  rem  * @ignore
+  rem  */
+  method public void handleJavascriptEvents(BBjNativeJavaScriptEvent ev!)
+    map! = ev!.getEventMap()
+    type$ = str(map!.get("type"))
+    payload! = new BBjPullToRefreshEvent(#this!)
+
+    if(type$ = "bbj-refresh") then
+      BBjAPI().postPriorityCustomEvent(#getScopedEventName("bbj-refresh"), payload!)
+    fi
+  methodend
+
+classend
