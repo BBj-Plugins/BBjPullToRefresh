@@ -78,7 +78,7 @@ Supported themes are :
 
 BBjPullToRefresh goes throw three stages:
 
-- **Pull**: When the child window is being pull
+- **Pull**: When the child window is being pulled
 - **Release**: When the child window reached the pull's threshold
 - **Refresh**: When the child window is being refreshed
 
