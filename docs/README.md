@@ -183,4 +183,4 @@ The minimum distance of the pull until the refresher will go into the release st
 
 ## Events
 
-BBjPullToRefresh exposes only one event `onRefresh`. You can listen to the `onRefresh` event by setting a callback using the `BBjPullToRefresh:onRefresh` method. The event payload is an instance of `BBjPullToRefreshEvent`
+BBjPullToRefresh exposes only one event `onRefresh`. You can listen to the `onRefresh` event by setting a callback using the `BBjPullToRefresh:onRefresh` method. The event's payload is an instance of `BBjPullToRefreshEvent`
