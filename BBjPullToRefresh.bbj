@@ -20,7 +20,7 @@ class public BBjPullToRefreshEvent
   rem  *
   rem  * @return The widget instance
   rem  */
-  method public BBjPullToRefreshEvent getWidget()
+  method public BBjPullToRefresh getWidget()
     methodret #Component!
   methodend
   rem /**
@@ -28,7 +28,7 @@ class public BBjPullToRefreshEvent
   rem  *
   rem  * @return The control instance
   rem  */
-  method public BBjPullToRefreshEvent getControl()
+  method public BBjPullToRefresh getControl()
     methodret #getWidget()
   methodend
 
@@ -67,6 +67,10 @@ class public BBjPullToRefresh
   rem  * A constant which refers to the toast `info` theme.
   rem  */
   field public static BBjNumber THEME_INFO = 128
+  rem /**
+  rem  * A constant which refers to the toast `gray` theme.
+  rem  */
+  field public static BBjNumber THEME_GRAY = 256
   rem /**
   rem  * When true , then BBjPullToRefresh will be disabled, enabled otherwise rem
   rem  */
@@ -357,7 +361,7 @@ class public BBjPullToRefresh
   rem  * Resolve the theme constant as a string attribute
   rem  *
   rem  * @param value! The theme constant
-  rem  *  
+  rem  *
   rem  * @return BBjString The theme attribute
   rem  */
   method protected BBjString getThemeAttribute(BBjNumber value!)
@@ -372,6 +376,8 @@ class public BBjPullToRefresh
         methodret "danger"
       case BBjPullToRefresh.THEME_INFO
         methodret "info"
+      case BBjPullToRefresh.THEME_GRAY
+        methodret "gray"
       case default
         methodret "primary"
     swend

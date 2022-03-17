@@ -36,6 +36,7 @@ And much more !
 
 ```BBj
 use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
+use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefreshEvent
 
 wnd! = BBjAPI().openSysGui("X0").addWindow(10,10,300,300,"BBjPullToRefresh",$$)
 wnd!.setCallback(BBjAPI.ON_CLOSE,"eoj")
@@ -48,8 +49,14 @@ ptr!.onRefresh("onRefresh")
 process_events
 
 onRefresh:
+  declare auto BBjPullToRefreshEvent payload!
+
+  ev! = BBjAPI().getLastEvent()
+  payload! = ev!.getObject()
+  control! = payload!.getControl()
+
   wait 3
-  ptr!.finish()
+  control!.finish()
 return
 
 eoj:
@@ -62,7 +69,7 @@ release
 </div>
 <br><br>
 
-## Theme
+## Themes
 
 Like other BBj Controls, The BBjPullToRefresh supports themes. You can set the theme using the `BBjPullToRefresh:setTheme` method.
 
@@ -73,6 +80,7 @@ Supported themes are :
 - BBjToast.THEME_WARNING
 - BBjToast.THEME_DANGER
 - BBjToast.THEME_INFO
+- BBjToast.THEME_GRAY
 
 You can also create a custom theme by assigning the widget a custom attribute
 
@@ -129,7 +137,7 @@ BBjPullToRefresh allows to replace the default arrow icon and the refresh icon b
 - BBjPullToRefresh.setIconArrow
 - BBjPullToRefresh.setIconRefresh
 
-Icons are strings which can in any of the following formats:
+Icons are strings which can be in any of the following formats:
 
 - **Url**: (ex: /path/to/image.gif)
 - **Data Url**: (ex: data:image/jpeg;base64,/9j/4SDpRXhpZgAAT....)
