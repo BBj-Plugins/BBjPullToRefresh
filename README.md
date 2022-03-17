@@ -15,7 +15,7 @@
   </a>
 </p>
 
-BBjPullToRefresh lets a user pull down on a child window using touch in order to refresh or retrieve more data. Pull-to-refresh is widely used on devices with a touch screen. You can use the APIs shown here to implement pull-to-refresh in your DWC app.
+BBjPullToRefresh lets a user pull down on a child window using touch in order to refresh or retrieve more data. Pull-to-refresh is widely used on devices with a touch screen.
 
 ## Installation
 
