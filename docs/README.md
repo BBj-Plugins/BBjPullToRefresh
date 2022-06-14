@@ -1,7 +1,7 @@
 # BBjPullToRefresh Widget
 
 <p>
-  <a href="http://www.basis.com/downloads">
+  <a href="http://www.basis.cloud/downloads">
     <img src="https://img.shields.io/badge/BBj-v22.00-blue" alt="BBj v22.00" />
   </a>
   <a href="https://github.com/BBj-Plugins/BBjPullToRefresh/blob/master/README.md">
