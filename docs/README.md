@@ -35,32 +35,32 @@ And much more !
 ## The gist
 
 ```BBj
-use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
-use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefreshEvent
+USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
+USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefreshEvent
 
 wnd! = BBjAPI().openSysGui("X0").addWindow(10,10,300,300,"BBjPullToRefresh",$$)
 wnd!.setCallback(BBjAPI.ON_CLOSE,"eoj")
-
 container! = wnd!.addChildWindow(wnd!.getAvailableControlID(), 0, 0, 300, 300, "", $0000800$, BBjAPI().getSysGui().getAvailableContext())
 
 ptr! = new BBjPullToRefresh(container!)
 ptr!.onRefresh("onRefresh")
 
-process_events
+PROCESS_EVENTS
 
 onRefresh:
-  declare auto BBjPullToRefreshEvent payload!
 
-  ev! = BBjAPI().getLastEvent()
-  payload! = ev!.getObject()
-  control! = payload!.getControl()
+    declare AUTO BBjPullToRefreshEvent payload!
 
-  wait 3
-  control!.finish()
-return
+    ev! = BBjAPI().getLastEvent()
+    payload! = ev!.getObject()
+    control! = payload!.getControl()
+    WAIT 3
+    control!.finish()
+RETURN
 
 eoj:
-release
+RELEASE
+
 ```
 
 <br><br>
@@ -85,14 +85,19 @@ Supported themes are :
 You can also create a custom theme by assigning the widget a custom attribute
 
 ```BBj
-use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
+USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
+
+style! = "
+: [theme=""my-custom-theme""]{
+:   color: teal;
+: }
+:"
+
+web! = BBjAPI().getWebManager()
+web!.injectStyle(style!, 0)
 
 wnd! = BBjAPI().openSysGui("X0").addWindow(10,10,300,300,"BBjPullToRefresh",$$)
 wnd!.setCallback(BBjAPI.ON_CLOSE,"eoj")
-wnd!.setAttribute("@app-style-bottom", "" +
-: "[theme=""my-custom-theme""]{ "+
-: " color: teal"+
-: "}")
 
 container! = wnd!.addChildWindow(wnd!.getAvailableControlID(), 0, 0, 300, 300, "", $0000800$, BBjAPI().getSysGui().getAvailableContext())
 
@@ -100,15 +105,15 @@ ptr! = new BBjPullToRefresh(container!)
 ptr!.setAttribute("theme","my-custom-theme")
 ptr!.onRefresh("onRefresh")
 
-process_events
+PROCESS_EVENTS
 
 onRefresh:
-  wait 3
+  WAIT 3
   ptr!.finish()
-return
+RETURN
 
 eoj:
-release
+RELEASE
 ```
 
 ## Texts
@@ -145,7 +150,7 @@ Icons are strings which can be in any of the following formats:
 - **pool:icon**: An icon to load from the passed pool. (ex: `feather:arrow`)
 
 ```BBj
-use ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
+USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
 
 wnd! = BBjAPI().openSysGui("X0").addWindow(10,10,300,300,"BBjPullToRefresh",$$)
 wnd!.setCallback(BBjAPI.ON_CLOSE,"eoj")
@@ -156,15 +161,15 @@ ptr! = new BBjPullToRefresh(container!)
 ptr!.setIconRefresh("https://cdnjs.cloudflare.com/ajax/libs/timelinejs/2.25/css/loading.gif")
 ptr!.onRefresh("onRefresh")
 
-process_events
+PROCESS_EVENTS
 
 onRefresh:
-  wait 3
+  WAIT 3
   ptr!.finish()
-return
+RETURN
 
 eoj:
-release
+RELEASE
 ```
 
 <br><br>
