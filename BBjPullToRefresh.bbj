@@ -122,7 +122,7 @@ CLASS public BBjPullToRefresh
   REM  */
   METHOD public BBjPullToRefresh(BBjChildWindow wnd!, BBjNumber prepend!)
     #WebComponent! = wnd!.addWebComponent("bbj-refresher")
-    #WebComponent!.putClientProperty("__canvasId__", wnd!.getID())
+    #WebComponent!.putClientProperty("__canvasId__", wnd!.getClientObjectID())
     #WebComponent!.setStyle("width","")
     #WebComponent!.setStyle("height","")
     #WebComponent!.setStyle("position","")
@@ -139,7 +139,7 @@ CLASS public BBjPullToRefresh
     script! = "" +
 :    "(async () => {" +
 :    "  await customElements.whenDefined('bbj-refresher');" +
-:    "  component.__canvas__ = document.querySelector('.bbj-1-' + component.__canvasId__);" +
+:    "  component.__canvas__ = objects.get(component.__canvasId__);" +
 :    prependSelector! + ".prepend(component);" +
 :    "  component.addEventListener('bbj-pull', ev => {"+
 :    "    component.__canvas__.style.transform = `translate3d(0px, ${ev.detail}px, 0px)`;" +
