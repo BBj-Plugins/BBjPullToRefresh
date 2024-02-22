@@ -121,7 +121,7 @@ CLASS public BBjPullToRefresh
   REM  * @see BBjPullToRefresh.PREPEND_PARENT
   REM  */
   METHOD public BBjPullToRefresh(BBjChildWindow wnd!, BBjNumber prepend!)
-    #WebComponent! = wnd!.addWebComponent("bbj-refresher")
+    #WebComponent! = wnd!.addWebComponent("dwc-refresher")
     #WebComponent!.putClientProperty("__canvasId__", wnd!.getClientObjectID())
     #WebComponent!.setStyle("width","")
     #WebComponent!.setStyle("height","")
@@ -129,7 +129,7 @@ CLASS public BBjPullToRefresh
     #WebComponent!.setTabTraversable(0)
     #WebComponent!.setFocusable(0)
     handler! = new BBjPullToRefreshEventHandler(#this!)
-    #WebComponent!.setCallback("bbj-refresh", handler!, "handleClientEvents")
+    #WebComponent!.setCallback("dwc-refresh", handler!, "handleClientEvents")
     prependSelector! = "component.__canvas__.parentElement"
 
     IF(prepend! = BBjPullToRefresh.PREPEND_SELF)
@@ -138,10 +138,10 @@ CLASS public BBjPullToRefresh
 
     script! = "" +
 :    "(async () => {" +
-:    "  await customElements.whenDefined('bbj-refresher');" +
+:    "  await customElements.whenDefined('dwc-refresher');" +
 :    "  component.__canvas__ = objects.get(component.__canvasId__);" +
 :    prependSelector! + ".prepend(component);" +
-:    "  component.addEventListener('bbj-pull', ev => {"+
+:    "  component.addEventListener('dwc-pull', ev => {"+
 :    "    component.__canvas__.style.transform = `translate3d(0px, ${ev.detail}px, 0px)`;" +
 :    "  });" +
 :    "})()"
@@ -306,7 +306,7 @@ CLASS public BBjPullToRefresh
   METHOD public void finish()
     #getWebComponent().executeAsyncScript("
 :    (async () => {
-:    await customElements.whenDefined('bbj-refresher');
+:    await customElements.whenDefined('dwc-refresher');
 :    await component.finish();
 :    })();
 :    ")
@@ -319,7 +319,7 @@ CLASS public BBjPullToRefresh
   REM  * @param callback! The event CALLBACK
   REM  */
   METHOD public void onRefresh(String callback!)
-    BBjAPI().setCustomEventCallback(str(#this!) + "bbj-refresher", callback!)
+    BBjAPI().setCustomEventCallback(str(#this!) + "dwc-refresher", callback!)
   METHODEND
   REM /**
   REM  * Set a refresh callback.
@@ -330,18 +330,18 @@ CLASS public BBjPullToRefresh
   REM  * @param callback! The event METHOD
   REM  */
   METHOD public void onRefresh(CustomObject instance!, BBjString method!)
-    BBjAPI().setCustomEventCallback(str(#this!) + "bbj-refresher", instance!, method!)
+    BBjAPI().setCustomEventCallback(str(#this!) + "dwc-refresher", instance!, method!)
   METHODEND
   REM /**
   REM  * CLEAR the refresh callback.
   REM  */
   METHOD public void clearRefreshCallback()
-    BBjAPI().clearCustomEventCallback(str(#this!) + "bbj-refresher")
+    BBjAPI().clearCustomEventCallback(str(#this!) + "dwc-refresher")
   METHODEND
 
 CLASSEND
 REM /**
-REM  * A CLASS which is used to handle the bbj-refresher client events.
+REM  * A CLASS which is used to handle the dwc-refresher client events.
 REM  *
 REM  * @author Hyyan Abo Fakher
 REM  */
@@ -361,8 +361,8 @@ CLASS public BBjPullToRefreshEventHandler
     type$ = ev!.getEventType()
     payload! = new BBjPullToRefreshEvent(#Widget!)
 
-    IF(type$ = "bbj-refresh") THEN
-      BBjAPI().postPriorityCustomEvent(str(#Widget!) + "bbj-refresher", payload!)
+    IF(type$ = "dwc-refresh") THEN
+      BBjAPI().postPriorityCustomEvent(str(#Widget!) + "dwc-refresher", payload!)
     FI
   METHODEND
 
