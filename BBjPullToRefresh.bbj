@@ -80,11 +80,11 @@ CLASS public BBjPullToRefresh
   REM /**
   REM  * The arrow icon to USE when the `stage` is `pull` OR `release`.
   REM  */
-  FIELD public BBjString IconArrow! = "bbj:arrow-down"
+  FIELD public BBjString IconArrow! = "dwc:arrow-down"
   REM /**
   REM  * The refresh icon to USE when the `stage` is `refresh`.
   REM  */
-  FIELD public BBjString IconRefresh! = "bbj:animated-spinner"
+  FIELD public BBjString IconRefresh! = "dwc:animated-spinner"
   REM /**
   REM  * The minimum distance of the pull UNTIL the refresher will go into the RELEASE state.
   REM  */

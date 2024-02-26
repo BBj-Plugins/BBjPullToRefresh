@@ -34,7 +34,7 @@ And much more !
 
 ## The gist
 
-```BBj
+```bbj
 USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
 USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefreshEvent
 
@@ -84,7 +84,7 @@ Supported themes are :
 
 You can also create a custom theme by assigning the widget a custom attribute
 
-```BBj
+```bbj
 USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
 
 style! = "
@@ -127,7 +127,7 @@ BBjPullToRefresh goes throw three stages:
 For each of the previous stages , BBjPullToRefresh provides a method to set
 the instruction text of the stage.
 
-```BBj
+```bbj
 ptr! = new BBjPullToRefresh(container!)
 
 ptr!.setTextPull("pulling ...")
@@ -149,7 +149,7 @@ Icons are strings which can be in any of the following formats:
 - **icon**: An icon to load from the default BBj icons pool. (ex: `chevron-down`)
 - **pool:icon**: An icon to load from the passed pool. (ex: `feather:arrow`)
 
-```BBj
+```bbj
 USE ::BBjPullToRefresh/BBjPullToRefresh.bbj::BBjPullToRefresh
 
 wnd! = BBjAPI().openSysGui("X0").addWindow(10,10,300,300,"BBjPullToRefresh",$$)
